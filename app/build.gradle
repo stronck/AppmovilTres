@@ -44,6 +44,9 @@ dependencies {
             include: ['*.jar']
     )
 
+    // Dependencia para ejecutar pruebas unitarias locales con JUnit 4.
+    testImplementation 'junit:junit:4.12'
+
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
