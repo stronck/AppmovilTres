@@ -6,6 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="in.myinnos.swiggyanimation">
 
+    <!-- Permite consultar los datos publicados mediante HTTP/HTTPS. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- Configuración general de la aplicación. -->
     <application
         android:allowBackup="true"
