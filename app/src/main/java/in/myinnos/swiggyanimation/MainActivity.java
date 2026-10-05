@@ -1,6 +1,7 @@
 package in.myinnos.swiggyanimation;
 
 import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -17,8 +18,8 @@ import butterknife.ButterKnife;
 /**
  * Actividad principal de la aplicación.
  *
- * Muestra una lista de alimentos y conserva la animación
- * de los elementos mientras el usuario realiza scroll.
+ * Obtiene los datos desde una fuente HTTP y los presenta
+ * mediante un RecyclerView.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -46,13 +47,12 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(R.string.app_name);
         }
 
-        // Crea el adaptador con la lista de alimentos de ejemplo.
+        // Inicializa el adaptador mientras se obtiene la información remota.
         adpater = new RecyclerAdapter(
                 getApplicationContext(),
-                getSampleFoodList()
+                new ArrayList<DataModel>()
         );
 
-        // Configura el RecyclerView para mostrar los elementos verticalmente.
         LinearLayoutManager layoutManager =
                 new LinearLayoutManager(getApplicationContext());
 
@@ -81,27 +81,37 @@ public class MainActivity extends AppCompatActivity {
                 adpater.recyclerViewScrolled(recyclerView, dy);
             }
         });
+
+        // Consulta los datos del servidor en segundo plano.
+        new LoadFoodTask().execute();
     }
 
     /**
-     * Genera los datos que se muestran en la lista.
-     * Se conservan los 100 elementos originales de la aplicación.
+     * Tarea que realiza el acceso HTTP sin bloquear la interfaz.
      */
-    private List getSampleFoodList() {
-        ArrayList list = new ArrayList();
+    private class LoadFoodTask
+            extends AsyncTask<Void, Void, List<DataModel>> {
 
-        int i = 1;
-
-        for (int j = 100; i <= j; ++i) {
-            list.add(
-                    new DataModel(
-                            "Food " + i,
-                            "Category " + i,
-                            "Offer " + i
-                    )
-            );
+        @Override
+        protected List<DataModel> doInBackground(Void... voids) {
+            try {
+                return new FoodApiService().getFoods();
+            } catch (Exception exception) {
+                return new ArrayList<DataModel>();
+            }
         }
 
-        return list;
+        @Override
+        protected void onPostExecute(List<DataModel> foods) {
+            super.onPostExecute(foods);
+
+            // Actualiza el adaptador con la información recibida.
+            adpater = new RecyclerAdapter(
+                    getApplicationContext(),
+                    foods
+            );
+
+            recyclerView.setAdapter(adpater);
+        }
     }
 }
