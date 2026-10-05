@@ -1,0 +1,2 @@
+// Declara el módulo de la aplicación incluido en el proyecto.
+include ':app'
