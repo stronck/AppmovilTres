@@ -1,0 +1,26 @@
+// Configuración general del proyecto Gradle.
+
+// Repositorios y herramientas de compilación.
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.2'
+    }
+}
+
+// Repositorios disponibles para todos los módulos.
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+// Tarea para limpiar los archivos generados de compilación.
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
